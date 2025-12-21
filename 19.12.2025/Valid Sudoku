@@ -1,0 +1,34 @@
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        // Use boolean arrays to track seen numbers (1-9)
+        // Dimensions: [9 indices][10 possible numbers (0-9, though 0 unused)]
+        boolean[][] seenRow = new boolean[9][10];
+        boolean[][] seenCol = new boolean[9][10];
+        boolean[][] seenBox = new boolean[9][10];
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char c = board[i][j];
+                
+                if (c != '.') {
+                    int num = c - '0'; // Convert char to int
+                    
+                    // Calculate the box index (0-8)
+                    int boxIdx = 3 * (i / 3) + (j / 3);
+
+                    // Check if this number has already been seen in the current 
+                    // row, column, or box.
+                    if (seenRow[i][num] || seenCol[j][num] || seenBox[boxIdx][num]) {
+                        return false;
+                    }
+
+                    // Mark as seen
+                    seenRow[i][num] = true;
+                    seenCol[j][num] = true;
+                    seenBox[boxIdx][num] = true;
+                }
+            }
+        }
+        return true;
+    }
+}
