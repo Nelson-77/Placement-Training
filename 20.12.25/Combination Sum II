@@ -1,0 +1,35 @@
+class Solution {
+  private void fn(int i, int target, int[] nums, List<Integer> subset, List<List<Integer>> result) {
+    if (i == nums.length) {
+      if (target == 0) {
+        result.add(new ArrayList<>(subset));
+      }
+      return;
+    }
+
+    if (target - nums[i] >= 0) {
+      subset.add(nums[i]);
+      fn(i + 1, target - nums[i], nums, subset, result);
+      subset.remove(subset.size() - 1);
+    }
+
+    while(i + 1 < nums.length && nums[i] == nums[i + 1]) i++;
+
+    fn(i + 1, target, nums, subset, result);
+  }
+  public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+    List<List<Integer>> result = new ArrayList<>();
+    List<Integer> subset = new ArrayList<>();
+
+    Arrays.sort(candidates);
+    fn(0, target, candidates, subset, result);
+
+    return result;
+  }
+}
+
+// duplicate numbers can be there.
+// each number can be used only once. (i + 1, something with target)
+// No dup combinations.
+
+// For the same pos, if you are rejecting a number, then don't pick it's dup for the same pos.
