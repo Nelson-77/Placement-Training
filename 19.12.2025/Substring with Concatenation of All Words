@@ -1,0 +1,6 @@
+// semicolons : 1
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        return Optional.of(Arrays.stream(words).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))) .map(target -> IntStream.range(0, words[0].length()) .mapToObj(i -> new java.util.AbstractMap.SimpleEntry<>(new HashMap<String, Long>(), i)) .flatMap(state -> IntStream.iterate(state.getValue(), j -> j <= s.length() - words[0].length(), j -> j + words[0].length()) .filter(j -> state.getKey().merge(s.substring(j, j + words[0].length()), 1L, Long::sum) != null && (j < state.getValue() + words.length * words[0].length() || state.getKey().compute(s.substring(j - words.length * words[0].length(), j - (words.length - 1) * words[0].length()), (k, v) -> v == 1 ? null : v - 1) == null || true) && state.getKey().equals(target)) .mapToObj(j -> j - (words.length - 1) * words[0].length())) .collect(Collectors.toList())) .orElse(Collections.emptyList());
+    }
+}
