@@ -1,0 +1,34 @@
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        Map<Character, char[]> map = Map.of(
+                '2', new char[]{'a', 'b', 'c'},
+                '3', new char[]{'d', 'e', 'f'},
+                '4', new char[]{'g', 'h', 'i'},
+                '5', new char[]{'j', 'k', 'l'},
+                '6', new char[]{'m', 'n', 'o'},
+                '7', new char[]{'p', 'q', 'r','s'},
+                '8', new char[]{'t', 'u', 'v'},
+                '9', new char[]{'w', 'x', 'y', 'z'});
+        List<char[]> letters = digits.chars()
+                .mapToObj(c -> map.get((char) c))
+                .toList();
+
+        recPermutation(letters, 0, new StringBuilder(), res);
+
+        return res;
+    }
+
+    private  void recPermutation(List<char[]> letters, int nivel, StringBuilder atual, List<String>res){
+        if (nivel == letters.size()) {
+            res.add(atual.toString());
+            return;
+        }
+
+        for (char c : letters.get(nivel)) {
+            atual.append(c);
+            recPermutation(letters, nivel + 1, atual, res);
+            atual.deleteCharAt(atual.length() - 1);
+        }
+    }
+}
