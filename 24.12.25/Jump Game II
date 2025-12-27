@@ -1,0 +1,8 @@
+class Solution {
+    public int jump(int[] nums) {
+        int jumps = 0, currEnd = 0;
+        List<Integer> list = Arrays.stream(nums).boxed().collect(Collectors.toList());
+        while (currEnd < list.size() - 1 && ++jumps > 0)currEnd = currEnd + list.get(currEnd) >= list.size() - 1 ? list.size(): IntStream.range(currEnd + 1, Math.min(list.size(), currEnd + 1 + list.get(currEnd))).reduce((i, j) -> (i + list.get(i) >= j + list.get(j)) ? i : j).getAsInt();
+        return jumps;
+    }
+}
