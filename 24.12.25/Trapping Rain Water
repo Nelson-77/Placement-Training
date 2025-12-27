@@ -1,0 +1,25 @@
+class Solution {
+    public int trap(int[] arr) {
+       int left = 0;
+       int right = arr.length-1;
+       int leftMax = Integer.MIN_VALUE;
+       int rightMax= Integer.MIN_VALUE;
+       int sum = 0;
+       while(left<=right){
+        if(arr[left]<=arr[right]){
+           if(leftMax<arr[left]){
+            leftMax = arr[left];
+           }
+           sum+=leftMax-arr[left];
+           left++;
+        }else{
+           if(rightMax<arr[right]){
+            rightMax = arr[right];
+           }
+           sum+=rightMax-arr[right];
+           right--;
+        }
+       } 
+       return sum;
+    }
+}
