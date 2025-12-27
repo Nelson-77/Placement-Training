@@ -1,0 +1,56 @@
+class Solution {
+    // Wrapper class for Integer array to use as HashMap key
+    static class ArrayKey {
+        private final Integer[] arr;
+        
+        public ArrayKey(Integer[] arr) {
+            this.arr = arr;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ArrayKey that = (ArrayKey) o;
+            
+            // Check if arrays have same length
+            if (this.arr.length != that.arr.length) return false;
+            
+            // Check each element
+            for (int i = 0; i < this.arr.length; i++) {
+                if (!this.arr[i].equals(that.arr[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(arr);
+        }
+    }
+    
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<ArrayKey, List<String>> map = new HashMap<>();
+
+        for(String s : strs){
+            char[] arr = s.toCharArray();
+            Integer[] count = new Integer[26];
+            Arrays.fill(count, 0);
+            for(char c: arr){ 
+                count[c-'a']+=1;
+            }
+            
+            ArrayKey key = new ArrayKey(count);
+            if(map.containsKey(key)){
+                map.get(key).add(s);
+            } else {
+                List<String> list = new ArrayList<>();
+                list.add(s);
+                map.put(key, list);
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+}
