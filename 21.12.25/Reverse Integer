@@ -1,0 +1,16 @@
+class Solution {
+    public int reverse(int x) {boolean isNegative = false;
+        int result = 0;
+        int prevValue = 0;
+        while (x != 0){
+            int unit = x%10;
+            result = result *10 + unit;
+            if((result - unit)/10 != prevValue){
+                return 0;
+            }
+            prevValue = result;
+            x = x/10;
+        }
+        return result;
+    }
+}
