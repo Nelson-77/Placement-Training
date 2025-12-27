@@ -1,0 +1,62 @@
+class Solution {
+    int[][] result;
+    int[] directions = {0, 1, 2, 3};
+    public int[][] generateMatrix(int n) {
+        result = new int[n][n];
+        dfs(result, 1, 0, 0, n, 0);
+        return result;
+    }
+
+    private void dfs(int[][] result, int val, int row, int col, int n, int dir) {
+        if (val == (n * n) + 1) {
+            return;
+        }
+
+        result[row][col] = val;
+        int[] nextCell = getNextCell(row, col, dir);
+        int nextRow = nextCell[0];
+        int nextCol = nextCell[1];
+        if (nextRow < 0 || nextCol < 0 || nextRow == n || nextCol == n || result[nextRow][nextCol] != 0) {
+            dir = (dir + 1) % 4;
+            nextCell = getNextCell(row, col, dir);
+        }
+        dfs(result, val + 1, nextCell[0], nextCell[1], n, dir);
+    }
+
+    private int[] getNextCell(int row, int col, int dir) {
+        if (dir == 0) {
+            return new int[]{row, col + 1};
+        } else if (dir == 1) {
+            return new int[]{row + 1, col};
+        } else if (dir == 2) {
+            return new int[]{row, col - 1};
+        } else {
+            return new int[]{row - 1, col};
+        }
+    }
+}
+
+/*
+given an n
+n * n matrix in spiral order, starting with 1, ending with (n * n)
+start from the left top, and keep going right till we hit a "border".
+then go down till we hit a border
+then go left
+then go right
+
+directions - 0, 1, 2, 3: 
+0 - right, 1 - down, 2 - left, 3 up
+
+border -> if we hit row = 0 or col = 0 or row = n - 1 or col = n - 1 or an occupied cell
+which will be a non-zero cell
+
+dfs(int[][] matrix, int val, int row, int col):
+if (val == n*n + 1) return
+if (we hit a border) {
+    change direction and continue
+}
+set row col to val + 1
+continue in same direction
+
+
+*/
