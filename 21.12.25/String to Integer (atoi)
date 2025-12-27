@@ -1,0 +1,32 @@
+
+class Solution {
+    static final int INT_MIN_VAL = -2147483648;
+    static final int INT_MAX_VAL = 2147483647;
+    static private int helper(int ind, String s, long num, int sign){
+        
+        if(ind>=s.length() || !Character.isDigit(s.charAt(ind))){
+            return (int)(num*sign);
+        }
+
+
+        num*=10;
+        num+=s.charAt(ind)-'0';
+
+        if(sign*num<INT_MIN_VAL)return INT_MIN_VAL;
+        if(sign*num>INT_MAX_VAL)return INT_MAX_VAL;
+        
+        return helper(ind+1,s,num,sign);
+    }
+    public int myAtoi(String s) {
+        int sign=1,i=0;
+        int n=s.length();
+        while(i<n && (s.charAt(i)==' ') ){
+            i++;
+        }
+        if(i<n && (s.charAt(i)=='-' || s.charAt(i)=='+')){
+            sign=(s.charAt(i)=='-')?-1:1;
+            i++;
+        }
+        return helper(i,s,0,sign);
+    }
+}
