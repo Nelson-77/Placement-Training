@@ -1,0 +1,43 @@
+class Solution {
+    private void dfs(List<List<Integer>> triangle, int level, int column, int current, int[] result) {
+        if (level == triangle.size()) {
+            if (result[0] > current) {
+                result[0] = current;
+            }
+            return;
+        }
+        dfs(triangle, level + 1, column, current + triangle.get(level).get(column), result);
+        dfs(triangle, level + 1, column + 1, current + triangle.get(level).get(column), result);
+    }
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle.size() == 1) {
+            return triangle.get(0).get(0);
+        }
+        int[][] memo = new int[triangle.size()][triangle.get(triangle.size() - 1).size()];
+        memo[0][0] = triangle.get(0).get(0);
+        int result = Integer.MAX_VALUE;
+        for (int i = 1; i < triangle.size(); i++) {
+            for (int j = 0; j < triangle.get(i).size(); j++) {
+                int min = Integer.MAX_VALUE;
+                if (j > 0) {
+                    int m = memo[i - 1][j - 1] + triangle.get(i).get(j);
+                    if (m < min) {
+                        min = m;
+                    }
+                }
+                if (j < triangle.get(i).size() - 1) {
+                    int m = memo[i - 1][j] + triangle.get(i).get(j);
+                    if (m < min) {
+                        min = m;
+                    }
+                }
+                memo[i][j] = min;
+                if (i == triangle.size() - 1 && result > min) {
+                    result = min;
+                }
+            }
+        }
+
+        return result;
+    }
+}
