@@ -1,0 +1,68 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node next;
+
+    public Node() {}
+    
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val, Node _left, Node _right, Node _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        //do some sort of breadth first search
+        //we can do level order traversal
+        //for each level, we keep track of level size so we know when to consider this the next level
+        //essentailly when we pop node, if there is a node still in the queue that is on same level, that would be its next
+        //if there isnt, that means there is no next so we set to null
+        //use queue
+        if(root == null){
+            return root;
+        }
+        //dummy node to preserve root before traversing
+        Node dummy = new Node(0);
+        dummy.next = root;
+
+        List<Node> q = new LinkedList<>();
+        //add root to queue initially
+        q.add(root);
+
+        //Level order traversal
+        while(!q.isEmpty()){
+            int levelSize = q.size();
+
+            for(int i = 0; i < levelSize; i++){
+                //get current node in level, check if level is empty
+                //if level is empty, this is last node on level so set its next to null
+                //if level is not empty, set its next to next node in level (to the right node)
+                Node curr = q.removeFirst();
+                if(i == levelSize -1 ){
+                    curr.next = null;
+                } else {
+                    curr.next = q.getFirst();
+                }
+
+                //finally add this nodes child to the queue
+                if(curr.left != null) q.add(curr.left);
+                if(curr.right != null) q.add(curr.right);
+            }
+        }
+
+
+        //return orignal root (dummy.next)
+        return dummy.next;
+    }
+}
