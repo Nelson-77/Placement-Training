@@ -1,0 +1,171 @@
+/*
+===============================================================================
+WORD LADDER – BFS SOLUTION (FULL EXPLANATION)
+===============================================================================
+
+PROBLEM IDEA:
+-------------
+Given:
+- beginWord
+- endWord
+- a list of valid dictionary words (wordList)
+
+Goal:
+Find the length of the SHORTEST transformation sequence from beginWord to endWord
+such that:
+- Only ONE character can be changed at a time
+- Every intermediate word must exist in wordList
+
+If no such transformation exists → return 0
+
+-------------------------------------------------------------------------------
+
+INTUITION:
+----------
+1. Treat EACH WORD as a NODE in a graph.
+2. An EDGE exists between two words if they differ by EXACTLY ONE character.
+3. We need the SHORTEST path from beginWord to endWord.
+4. Since each transformation costs exactly 1 step, this is an UNWEIGHTED graph.
+5. Shortest path in an unweighted graph is best solved using BREADTH-FIRST SEARCH.
+
+-------------------------------------------------------------------------------
+
+WHY BFS (NOT DFS):
+-----------------
+- BFS explores level by level.
+- Each BFS level corresponds to one transformation.
+- The first time we reach endWord, we are guaranteed it is the MINIMUM steps.
+
+-------------------------------------------------------------------------------
+
+APPROACH:
+---------
+1. Push (beginWord, 1) into a queue.
+2. Store all words in a HashSet for O(1) lookup.
+3. Remove beginWord from the set to mark it visited.
+4. While queue is not empty:
+   a. Pop the front word and its step count.
+   b. If the word equals endWord → return steps.
+   c. Try changing each character of the word from 'a' to 'z'.
+   d. If the transformed word exists in the set:
+      - Remove it (mark visited)
+      - Push it into the queue with steps + 1
+5. If BFS ends without finding endWord → return 0.
+
+-------------------------------------------------------------------------------
+
+DRY RUN:
+--------
+beginWord = "hit"
+endWord   = "cog"
+wordList  = ["hot","dot","dog","lot","log","cog"]
+
+Level 1: hit
+Level 2: hot
+Level 3: dot, lot
+Level 4: dog, log
+Level 5: cog → ANSWER = 5
+
+-------------------------------------------------------------------------------
+
+GRAPH REPRESENTATION:
+--------------------
+hit
+ |
+hot
+ / \
+dot lot
+ |   |
+dog log
+  \ /
+  cog
+
+-------------------------------------------------------------------------------
+
+IMPORTANT NOTES:
+----------------
+- HashSet ensures O(1) lookup time.
+- Removing a word from the set prevents revisiting (avoids infinite loops).
+- Queue ensures BFS order.
+- First reach of endWord guarantees shortest path.
+
+-------------------------------------------------------------------------------
+
+TIME COMPLEXITY:
+----------------
+Let:
+N = number of words in wordList
+L = length of each word
+
+For each word:
+- L character positions
+- 26 possible replacements
+
+Time Complexity: O(N × L × 26) ≈ O(N × L)
+
+-------------------------------------------------------------------------------
+
+SPACE COMPLEXITY:
+-----------------
+- HashSet stores up to N words
+- Queue can store up to N words
+
+Space Complexity: O(N)
+
+===============================================================================
+*/
+
+import java.util.*;
+
+class Pair {
+    String first;
+    int second;
+
+    Pair(String first, int second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(beginWord, 1));
+
+        Set<String> st = new HashSet<>();
+        int len = wordList.size();
+
+        for (int i = 0; i < len; i++) {
+            st.add(wordList.get(i));
+        }
+
+        st.remove(beginWord);
+
+        while (!q.isEmpty()) {
+
+            Pair curr = q.poll();
+            String word = curr.first;
+            int steps = curr.second;
+
+            if (word.equals(endWord)) {
+                return steps;
+            }
+
+            for (int i = 0; i < word.length(); i++) {
+                for (char ch = 'a'; ch <= 'z'; ch++) {
+
+                    char[] forReplaceCharArray = word.toCharArray();
+                    forReplaceCharArray[i] = ch;
+                    String replaced = new String(forReplaceCharArray);
+
+                    if (st.contains(replaced)) {
+                        st.remove(replaced);
+                        q.add(new Pair(replaced, steps + 1));
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+}
