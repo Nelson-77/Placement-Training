@@ -1,0 +1,77 @@
+class Solution {
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Node root = new Node((char)0, false);
+        for (String w: wordDict) {
+            char[] letters = w.toCharArray();
+            root.add(letters, letters.length, 0, root);
+        }
+        Set<String> rtn = new HashSet<>();
+        char[] letters = s.toCharArray();
+        recurse(root, root, letters, "", 0, rtn);
+
+        return new ArrayList<>(rtn);
+    }
+    private void recurse(Node root, Node parent, char[] letters, String sentence, int pos, Set<String> rtn) {
+        if (pos == letters.length) {
+            if (parent.endsWord) {
+                rtn.add(sentence.trim());
+            }
+            return;
+        }
+        char curChar = letters[pos];
+        if (! parent.hasChild(curChar)) {
+            return; // Nothing to add here. No word continues.
+        }
+        Node posNode = parent.get(curChar);
+        if (posNode.endsWord) {
+            // Try to navigate to the end as word break
+            // Since strings are immutable, this constitutes a backtrack.
+            recurse(root, root, letters, sentence + curChar + " ", pos+1, rtn);
+        }
+        // Try to navigate to the end as continuance of word
+        // Since strings are immutable, this constitutes a backtrack.
+        recurse(root, posNode, letters, sentence + curChar, pos+1, rtn);
+    }
+
+    private static class Node {
+        private char c;
+        private boolean endsWord;
+        private Node[] children = new Node[26];
+        static void add(char[] word, int n, int pos, Node parent) {
+            if (pos == n) {
+                parent.endsWord = true;
+            } else {
+                Node child = parent.addChild(word[pos]);
+                add(word, n, pos+1, child);
+            }
+        }
+        boolean hasChild(char c) {
+            return children[c-'a'] != null;
+        }
+        Node get(char c) {
+            return children[c-'a'];
+        }
+        Node(char c, boolean endsWord) {
+            this.c = c;
+            this.endsWord = endsWord;
+        }
+        Node addChild(char c) {
+            Node rtn = children[c-'a'];
+            if (rtn == null) {
+                rtn = new Node(c, false);
+                children[c-'a'] = rtn;
+            }
+            return rtn;
+        }
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 26; i++) {
+                if (children[i] != null) {
+                    sb.append((char)(i + 'a'));
+                }
+            }
+            return sb.toString();
+        }
+    }
+}
