@@ -1,0 +1,31 @@
+class Solution {
+    public int candy(int[] arr) {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        int[] dp = new int[arr.length];
+        Arrays.fill(dp, 1);
+
+        for(int i = 0; i < arr.length; i++){
+            pq.add(new int[]{i, arr[i]});
+        }
+
+        while(pq.size() > 0){
+            int[] item = pq.poll();
+            int index = item[0];
+            int val = item[1];
+            int max = dp[index];
+            if(index - 1 >= 0 && val > arr[index - 1]){
+                dp[index] = Math.max(dp[index], dp[index - 1] + 1);
+            }
+            if(index + 1 < arr.length && val > arr[index + 1]){
+                dp[index] = Math.max(dp[index], dp[index + 1] + 1);
+            }
+        }
+
+        int ans = 0;
+        for(int i = 0; i < arr.length; i++){
+            ans+= dp[i];
+        }
+
+        return ans;
+    }
+}
