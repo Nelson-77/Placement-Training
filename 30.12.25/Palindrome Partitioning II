@@ -1,0 +1,111 @@
+class Solution {
+    public int minCut(String s) {        
+        char[] chars = s.toCharArray();
+        int n = chars.length;
+        if (n == 1) {
+            return 0;
+        }
+
+        List<int[]> allPalindromes = findAllPalindromes(chars);
+
+        Map<Integer,List<Integer>> palMap = new HashMap<>();
+        for (int[] pal: allPalindromes) {
+            List<Integer> list = palMap.get(pal[0]);
+            if (list == null) {
+                list = new ArrayList<>();
+                palMap.put(pal[0], list);
+            }
+            list.add(pal[1]);
+        }
+
+        return recurse(palMap, new HashMap<Integer,Integer>(), 0, chars.length) - 1;
+    }
+
+    private int recurse(Map<Integer,List<Integer>> palMap, Map<Integer,Integer> leastToEnd,
+                         int loc, int n) {
+        if (loc == n) {
+            return 0;
+        }
+        if (leastToEnd.containsKey(loc)) {
+            return leastToEnd.get(loc);
+        }
+
+        int least = Integer.MAX_VALUE;
+        List<Integer> pals = palMap.get(loc);
+        if (pals == null) {
+            System.out.println("h");
+        }
+
+        for (int pal: pals) {
+            // Leveraging the map to hop ahead
+            int toEnd = recurse(palMap, leastToEnd, pal+1, n);
+            least = Math.min(toEnd, least);
+        }
+        least ++;
+        leastToEnd.put(loc, least);
+        
+        return least;
+    }
+
+    private List<int[]> findAllPalindromes(char[] schars) {
+        List<int[]> palindromes = new ArrayList<>();
+        int n = schars.length;
+        for (int i = 0; i < n; i++) {
+            int edge = 0;
+            int[] palindrome = null;
+            while (null != (palindrome = extendsOddPalindromic(schars, i, edge))) {
+                palindromes.add(palindrome);
+                edge += 1;
+            }
+            
+        }
+        for (int i = 0; i < n; i++) {
+            int edge = 0;
+            int[] palindrome = null;
+            while (null != (palindrome = extendsEvenPalindromic(schars, i, edge))) {
+                palindromes.add(palindrome);
+                edge += 1;
+            }
+        }
+        return palindromes;
+    }
+
+    /**
+     * It is assumed that the previous radius encompassing the position
+     * was already established as being palindromic
+     */
+    private int[] extendsOddPalindromic(char[] schars, int pos, int dist) {
+        int start = pos-dist;
+        int end = pos+dist;
+        if (dist == 0) {
+            // One character is always a palindrome
+            return new int[] {start,end};
+        } else if (start < 0 || end >= schars.length) {
+            // Going out of string bounds
+            return null;
+        } else {
+            if (schars[start] == schars[end]) {
+                return new int[] {start,end};
+            }
+            return null;
+        }
+    }
+
+    /**
+     * It is assumed that the previously the position was the
+     * start of an "even" palindrome that went up to dist-1
+     */
+    private int[] extendsEvenPalindromic(char[] schars, int pos, int dist) {
+        int start = pos - dist;
+        int end = (pos + dist + 1);
+        if (start < 0 || end >= schars.length) {
+            // Going out of string bounds
+            return null;
+        } else {
+            if (schars[start] == schars[end]) {
+                return new int[] {start,end};
+            }
+            return null;
+        }
+    }
+}
