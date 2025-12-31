@@ -1,0 +1,31 @@
+
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        // 1. Early check if there is enough gas for travel to the end
+        int totalGas = 0;
+        int totalCost = 0;
+        for(int i = 0; i<gas.length; i++){
+            totalGas += gas[i];
+            totalCost += cost[i];
+        }
+        if(totalGas<totalCost){
+            return -1;
+        }
+        // 2. Find the valid start point
+        int startStation = 0;
+        // Keep track of the leftover gas after each station
+        int leftOverGas = 0;
+        for(int i = 0; i<gas.length; i++){
+            // Gas from early station and current station
+            leftOverGas = leftOverGas + gas[i] - cost[i];
+            // If there is not enough gas for next station 
+            if(leftOverGas<0){
+                // Make the next station as a posible start point
+                startStation = i+1;
+                // Reset the left over gas
+                leftOverGas = 0;
+            } 
+        }
+        return startStation;
+    }
+}
