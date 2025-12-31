@@ -1,0 +1,44 @@
+// class Solution {
+//     public boolean help(String s , List<String> wd, int idx){
+//         if(idx==s.length()) return true;
+//         for(int i=0; i<wd.size(); i++){
+//             String w = wd.get(i);
+//             if(idx+w.length() <=s.length() && s.substring(idx,idx+w.length()).equals(w)){
+//                 if(help(s,wd,idx+w.length())) return true;
+//             }
+//         }
+//         return false;
+//     }
+//     public boolean wordBreak(String s, List<String> wordDict) {
+//         return help(s,wordDict,0);
+//     }
+// }
+
+//  >>> MEMOO -> 
+class Solution {
+    public boolean help(String s, List<String> wd, int idx, Boolean[] memo) {
+
+        if (idx == s.length()) return true;
+        if (memo[idx] != null) return memo[idx];
+
+        for (int i = 0; i < wd.size(); i++) {
+            String w = wd.get(i);
+
+            // check if word matches at current index
+            if (idx + w.length() <= s.length() &&
+                s.substring(idx, idx + w.length()).equals(w)) {
+
+                if (help(s, wd, idx + w.length(), memo)) {
+                    return memo[idx] = true;
+                }
+            }
+        }
+
+        return memo[idx] = false;
+    }
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Boolean[] memo = new Boolean[s.length()];
+        return help(s, wordDict, 0, memo);
+    }
+}
