@@ -1,0 +1,57 @@
+
+class Solution {
+
+    // Merge two sorted linked lists
+    public ListNode merge(ListNode list1, ListNode list2) {
+        ListNode dummy = new ListNode(100);
+        ListNode temp = dummy;
+
+        ListNode temp1 = list1;
+        ListNode temp2 = list2;
+
+        // Compare nodes from both lists and attach the smaller one
+        while (temp1 != null && temp2 != null) {
+            if (temp1.val <= temp2.val) {
+                temp.next = temp1;
+                temp1 = temp1.next;
+            } else {
+                temp.next = temp2;
+                temp2 = temp2.next;
+            }
+            temp = temp.next;
+        }
+
+        // Attach remaining nodes
+        if (temp1 == null) temp.next = temp2;
+        else temp.next = temp1;
+
+        return dummy.next;
+    }
+
+    // Main merge sort function
+    public ListNode sortList(ListNode head) {
+
+        // Base case
+        if (head == null || head.next == null) return head;
+
+        // Find middle of the list
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        // Split the list into two halves
+        ListNode secondHalf = slow.next;
+        slow.next = null;
+
+        // Recursively sort both halves
+        ListNode firstHalf = sortList(head);
+        secondHalf = sortList(secondHalf);
+
+        // Merge the sorted halves
+        return merge(firstHalf, secondHalf);
+    }
+}
