@@ -1,0 +1,34 @@
+
+class Solution(object):
+    def areOccurrencesEqual(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        from collections import Counter
+        freq = Counter(s).values()
+        return len(set(freq)) == 1
+
+
+        ##ORR
+
+        class Solution(object):
+            def areOccurrencesEqual(self, s):
+                """
+                :type s: str
+                :rtype: bool
+                """
+                freq = {}
+                for ch in s:
+                    freq[ch] = freq.get(ch, 0) + 1
+                return len(set(freq.values())) == 1
+
+        ##ORR
+
+        class Solution(object):
+            def areOccurrencesEqual(self, s):
+                """
+                :type s: str
+                :rtype: bool
+                """
+                return len(set(s.count(ch) for ch in set(s))) == 1
