@@ -1,0 +1,15 @@
+
+class Solution(object):
+    def countKDifference(self, nums, k):
+        hashmap = defaultdict(int)
+
+        res = 0
+
+        for i in range(len(nums)):
+            res += hashmap[nums[i] - k]
+            res += hashmap[nums[i] + k]
+
+            hashmap[nums[i]] += 1
+
+        return res
+        
