@@ -1,0 +1,13 @@
+
+class Solution(object):
+    def minTimeToType(self, word):
+        n = len(word)
+        total_seconds = n
+        pointer = 97
+        for char in word:
+            ascii_char = ord(char)
+            steps = abs(pointer - ascii_char)
+            isDirect = True if steps <= 13 else False
+            total_seconds += steps if isDirect else 26 - steps
+            pointer = ascii_char
+        return total_seconds
