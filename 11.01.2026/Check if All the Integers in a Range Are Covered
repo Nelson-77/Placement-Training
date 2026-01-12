@@ -1,0 +1,19 @@
+
+class Solution(object):
+    def isCovered(self, ranges, left, right):
+        check = set()
+
+        for i in range(len(ranges)):
+            start = ranges[i][0]
+            end = ranges[i][1]
+
+            for j in range(start , end + 1):
+                check.add(j)
+
+
+        for i in range(left , right + 1):
+            if i not in check:
+                return False
+
+        return True   
+        
